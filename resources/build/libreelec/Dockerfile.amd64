@@ -24,6 +24,7 @@ RUN apt-get update \
     qml-module-qtquick-window2 \
     qml-module-qtquick2 \
     libsdl2-dev \
+    libsdl2-ttf-dev \
     libva-dev \
     libdrm-dev \
     libavcodec-dev \

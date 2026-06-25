@@ -34,16 +34,24 @@ if [ "${PLATFORM_DISTRO_RELEASE%%.*}" -le 10 ]; then
   BUILD_ARG="--build-arg DEBIAN_RELEASE=bullseye"
 fi
 
-# Clean up
+GHCR_IMAGE="ghcr.io/echocabinet/plugin.program.moonlight-qt:latest"
+
+# Clean up any previous container/image
 docker rm --force moonlight-qt &> /dev/null || true
 docker rmi --force moonlight-qt &> /dev/null || true
 
-# Build
-docker build --file "./Dockerfile.${BUILD_FLAVOR}" --compress --tag moonlight-qt --platform "linux/${BUILD_ARCH}" $BUILD_ARG .
+# Try pulling the pre-built image from GHCR — much faster than building locally.
+# Falls back to a local build if the pull fails (offline, image not yet published, etc).
+if docker pull --platform "linux/${BUILD_ARCH}" "$GHCR_IMAGE" 2>/dev/null; then
+  echo "Using pre-built image from GHCR."
+  docker tag "$GHCR_IMAGE" moonlight-qt
+else
+  echo "GHCR pull failed or unavailable — building locally (this will take a while)..."
+  docker build --file "./Dockerfile.${BUILD_FLAVOR}" --compress --tag moonlight-qt --platform "linux/${BUILD_ARCH}" $BUILD_ARG .
+fi
 
 # Run and get files
 mkdir -p "$LOCAL_PATH"
-docker create --name moonlight-qt moonlight-qt
 docker run --volume "$LOCAL_PATH":/tmp/moonlight-qt moonlight-qt
 
 # Clean up

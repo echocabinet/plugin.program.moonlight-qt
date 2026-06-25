@@ -19,6 +19,7 @@ RUN apt-get update \
     qtdeclarative5-dev \
     libqt5svg5-dev \
     libqt5quickcontrols2-5 \
+    libqt5quickcontrols2-5-dev \
     qml-module-qtquick-controls2 \
     qml-module-qtquick-layouts \
     qml-module-qtquick-window2 \

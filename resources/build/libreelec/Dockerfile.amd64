@@ -2,21 +2,49 @@
 ARG DEBIAN_RELEASE=bookworm
 FROM debian:${DEBIAN_RELEASE}-slim
 
-# Install required packages and download Moonligh-qt AppImage version
+# Install build dependencies and runtime libraries.
+# We build moonlight-qt from source rather than extracting the upstream AppImage
+# so that it is compiled against Debian's libsdl2-dev, which has SDL_VIDEO_DRIVER_KMSDRM
+# defined. The upstream AppImage was built without this flag, which caused
+# vaapi.cpp's KMSDRM display path to be compiled out, preventing hardware-accelerated
+# video decoding on KMS/DRM displays (e.g. LibreELEC on generic x86_64).
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    build-essential \
+    git \
+    pkg-config \
+    qt5-qmake \
+    qtbase5-dev \
+    qtbase5-private-dev \
+    qtdeclarative5-dev \
+    libqt5svg5-dev \
+    libqt5quickcontrols2-5 \
+    qml-module-qtquick-controls2 \
+    qml-module-qtquick-layouts \
+    qml-module-qtquick-window2 \
+    qml-module-qtquick2 \
+    libsdl2-dev \
+    libva-dev \
+    libdrm-dev \
+    libavcodec-dev \
+    libavutil-dev \
+    libswscale-dev \
+    libswresample-dev \
+    libopus-dev \
+    libssl-dev \
+    libcurl4-openssl-dev \
     libatomic1 \
     libfuse2 \
     libgl1 \
     libgl1-mesa-dri \
+    libgles2 \
+    libglib2.0-dev \
     libgudev-1.0-0 \
     libinput10 \
     libqt5core5a \
     libqt5gui5 \
     libqt5network5 \
     libqt5qml5 \
-    libqt5quickcontrols2-5 \
-    libqt5svg5 \
     libsm6 \
     libva-wayland2 \
     libvdpau-va-gl1 \
@@ -24,17 +52,20 @@ RUN apt-get update \
     libxcb-cursor0 \
     libxcursor1 \
     libxi6 \
-    qml-module-qtquick-controls2 \
-    qml-module-qtquick-layouts \
-    qml-module-qtquick-window2 \
-    qml-module-qtquick2 \
-    wget \
  && apt-get clean \
- && rm -rf /var/lib/apt/lists/* \
- && DOWNLOAD_URL=$(wget --quiet --header "Accept: application/vnd.github.v3+json" --output-document - https://api.github.com/repos/moonlight-stream/moonlight-qt/releases/latest | grep -o '"browser_download_url": "[^"]*' | grep -o '[^"]*$' | grep ".AppImage") \
- && wget "${DOWNLOAD_URL}" -O /tmp/Moonlight-downloaded.AppImage \
- && chmod a+x /tmp/Moonlight-downloaded.AppImage
+ && rm -rf /var/lib/apt/lists/*
 
+# Clone and build moonlight-qt from source.
+# MOONLIGHT_VERSION can be overridden at build time, e.g. --build-arg MOONLIGHT_VERSION=v6.1.0
+ARG MOONLIGHT_VERSION=master
+RUN git clone --depth 1 --branch ${MOONLIGHT_VERSION} \
+    https://github.com/moonlight-stream/moonlight-qt.git /tmp/moonlight-qt-src \
+ && cd /tmp/moonlight-qt-src \
+ && git submodule update --init --recursive \
+ && qmake moonlight-qt.pro \
+ && make -j$(nproc) \
+ && install -m 755 app/moonlight /usr/bin/moonlight-qt \
+ && rm -rf /tmp/moonlight-qt-src
 
 # Script to extract the needed libraries
 COPY create_standalone_moonlight_qt.sh /tmp/

@@ -23,6 +23,7 @@ fi
 USR_DEPENDENCIES="
   libEGL.so*
   libGL.so*
+  libGLESv2.so*
   libGLX.so*
   libGLdispatch.so*
   libICE.so*
@@ -30,6 +31,8 @@ USR_DEPENDENCIES="
   libOpenGL.so*
   libQt5*
   libQt6*
+  libSDL2.so*
+  libSDL2-*.so*
   libSM.so*
   libSvtAv1Enc.so*
   libX11-xcb.so*
@@ -55,6 +58,7 @@ USR_DEPENDENCIES="
   libcrypto.so*
   libdatrie.so*
   libdav1d.so*
+  libdrm.so*
   libdouble-conversion.so*
   libffi.so*
   libfribidi.so*

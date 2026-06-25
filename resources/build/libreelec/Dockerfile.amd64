@@ -13,17 +13,16 @@ RUN apt-get update \
     build-essential \
     git \
     pkg-config \
-    qt5-qmake \
-    qtbase5-dev \
-    qtbase5-private-dev \
-    qtdeclarative5-dev \
-    libqt5svg5-dev \
-    libqt5quickcontrols2-5 \
-    qml-module-qtquick-controls2 \
-    qml-module-qtquick-layouts \
-    qml-module-qtquick-window2 \
-    qml-module-qtquick2 \
+    qt6-base-dev \
+    qt6-base-private-dev \
+    qt6-declarative-dev \
+    libqt6svg6-dev \
+    qml6-module-qtquick-controls \
+    qml6-module-qtquick-layouts \
+    qml6-module-qtquick-window \
+    qml6-module-qtquick \
     libsdl2-dev \
+    libsdl2-ttf-dev \
     libva-dev \
     libdrm-dev \
     libavcodec-dev \
@@ -41,10 +40,6 @@ RUN apt-get update \
     libglib2.0-dev \
     libgudev-1.0-0 \
     libinput10 \
-    libqt5core5a \
-    libqt5gui5 \
-    libqt5network5 \
-    libqt5qml5 \
     libsm6 \
     libva-wayland2 \
     libvdpau-va-gl1 \
@@ -62,7 +57,7 @@ RUN git clone --depth 1 --branch ${MOONLIGHT_VERSION} \
     https://github.com/moonlight-stream/moonlight-qt.git /tmp/moonlight-qt-src \
  && cd /tmp/moonlight-qt-src \
  && git submodule update --init --recursive \
- && qmake moonlight-qt.pro \
+ && qmake6 moonlight-qt.pro \
  && make -j$(nproc) \
  && install -m 755 app/moonlight /usr/bin/moonlight-qt \
  && rm -rf /tmp/moonlight-qt-src

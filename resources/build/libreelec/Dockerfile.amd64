@@ -55,12 +55,18 @@ RUN apt-get update \
 
 # Clone and build moonlight-qt from source.
 # MOONLIGHT_VERSION can be overridden at build time, e.g. --build-arg MOONLIGHT_VERSION=v6.1.0
+#
+# GL_IS_SLOW: changes renderer priority so DRM renderer is tried before EGL for VAAPI.
+# On LibreELEC KMSDRM + AMD, glCreateShader() returns 0 for any shader type in the EGL
+# renderer, making EGL unusable. With GL_IS_SLOW, moonlight tries the DRM renderer first
+# (KMS overlay planes, no shader compilation required), bypassing EGL entirely for VAAPI.
+# If DRM also fails, it falls back through EGL (still broken) to SDL (software decode).
 ARG MOONLIGHT_VERSION=v6.1.0
 RUN git clone --depth 1 --branch ${MOONLIGHT_VERSION} \
     https://github.com/moonlight-stream/moonlight-qt.git /tmp/moonlight-qt-src \
  && cd /tmp/moonlight-qt-src \
  && git submodule update --init --recursive \
- && qmake6 moonlight-qt.pro \
+ && qmake6 moonlight-qt.pro "DEFINES+=GL_IS_SLOW" \
  && make -j$(nproc) \
  && install -m 755 app/moonlight /usr/bin/moonlight-qt \
  && rm -rf /tmp/moonlight-qt-src

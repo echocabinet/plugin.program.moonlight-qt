@@ -37,6 +37,12 @@ USR_DEPENDENCIES="
   libsamplerate.so*
   libfreetype.so*
   libharfbuzz.so*
+  libXrandr.so*
+  libXss.so*
+  libwayland-egl.so*
+  libwayland-cursor.so*
+  libdecor-0.so*
+  libmfx.so*
   libSM.so*
   libSvtAv1Enc.so*
   libX11-xcb.so*

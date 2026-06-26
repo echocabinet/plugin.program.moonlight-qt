@@ -121,6 +121,25 @@ if [ -d "$ADDON_BIN_PATH/kodi_hooks/$PLATFORM_DISTRO" ]; then
   source "$ADDON_BIN_PATH/kodi_hooks/$PLATFORM_DISTRO/start.sh"
 fi
 
+# Force VAAPI to export decoded frames as separate NV12 DMA-BUF planes (Y + UV)
+# instead of a single composed DRM PRIME opaque surface.
+#
+# Why this is needed on LibreELEC:
+#   VAAPI hardware decode works correctly on LibreELEC x86_64 (AMD/Intel), but the
+#   default "composed" export path wraps the decoded surface in an opaque DRM PRIME
+#   descriptor (AV_PIX_FMT_DRM_PRIME). The EGL renderer must then import it using
+#   the GL_OES_EGL_image_external extension with a samplerExternalOES GLSL sampler.
+#   On LibreELEC's KMSDRM display stack (no X11/Wayland), glCreateShader() fails
+#   silently for that shader type on Mesa/AMD hardware, causing moonlight to loop
+#   endlessly recreating the renderer and never displaying a frame.
+#
+#   With VAAPI_EGL_SEPARATE_LAYERS=1, each NV12 plane is exported as its own
+#   DMA-BUF object and imported into EGL as a regular GL_TEXTURE_2D. The EGL
+#   renderer uses a standard sampler2D GLSL shader which compiles correctly.
+#   GPU decode and zero-copy GPU memory are fully preserved — only the export
+#   format changes.
+export VAAPI_EGL_SEPARATE_LAYERS=1
+
 # Start moonlight-qt and log to log file
 echo "--- Starting Moonlight ---"
 ./moonlight-qt "$@"

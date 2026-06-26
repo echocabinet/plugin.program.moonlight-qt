@@ -34,7 +34,7 @@ Raspberry Pi 3 works (limited support up to 720p) but needs changes to LibreELEC
 
 ## Instructions:
 ### 1. Install this plugin.
-- Download [plugin.program.moonlight-qt.zip](https://github.com/veldenb/plugin.program.moonlight-qt/releases/latest/) and store it on your Kodi device.
+- Download [plugin.program.moonlight-qt.zip](https://github.com/echocabinet/plugin.program.moonlight-qt/releases/latest/) and store it on your Kodi device.
 - In Kodi install Docker from the LibreELEC repository: Add-ons / Install from repository / LibreELEC Add-ons / Services / Docker _**(skip this on Ubuntu and Raspberry Pi OS)**_
 - Reboot LibreELEC to ensure Docker works _**(skip this on Ubuntu and Raspberry Pi OS)**_
 - Go to Add-ons / Install from zip file
@@ -90,7 +90,7 @@ The plugin can use the copied files to launch Moonlight from Kodi without the ex
 This support is still experimental. The plugin installs Moonlight-qt with APT directly onto the system, Docker is not used in this setup. 
 
 ### Generic x86_64
-Somewhat the same as the Pi 4 build but based on an AppImage Moonlight build. Extra libraries are injected into the AppImage.
+Moonlight-qt is compiled from source inside a Debian Bookworm Docker container using SDL2 with `SDL_VIDEO_DRIVER_KMSDRM` enabled. This ensures the VAAPI KMSDRM display path is compiled in, enabling hardware-accelerated video decoding on KMS/DRM displays (e.g. LibreELEC Generic x86_64). A pre-built Docker image is published to GHCR and pulled automatically, so no local compilation is needed on the device.
 
 ## Custom hook scripts (optional)
 
@@ -124,12 +124,8 @@ Location of hook script: `$KODI_DATA_DIR/userdata/addon_data/plugin.program.moon
 The script doesn't need to have the executable bit set and will be executed using bash.
 
 ## Known problems
-### Hardware acceleration on LibreELEC 11 Generic x86_64 doesn't work
-LibreELEC supplies two builds for Generic x86_64:
-- One using GBM: _"Generic PC (no NVIDIA support)"_ 
-- And a Legacy-build using X11: _"Legacy Generic PC (for older PCs and NVIDIA GPUs)"_.
- 
-The drivers on the GBM build are still very new and not stable on all hardware. The Legacy-build should be stable on most hardware and is preferred at the moment.  
+### Hardware acceleration on LibreELEC Generic x86_64
+This fork builds Moonlight-qt from source with KMSDRM SDL2 support, enabling VAAPI hardware-accelerated video decoding on Generic x86_64 (v0.6.0+). If you are using an older release based on the upstream AppImage, hardware decode will not work — upgrade to v0.6.0 or later.
 
 ### Sound in Kodi but no sound in Moonlight-qt
 Try to select a non-default audio device in Kodi's audio configuration. Kodi's and moonlight-qt's default audio device may differ and if a specific audio device is selected in Kodi the plugin instructs Moonlight-qt to use the device chosen in Kodi.
@@ -154,4 +150,4 @@ All configuration and streaming problems are probably related to Moonlight self,
 ## Thanks
 Thanks to [Cameron Gutman](https://github.com/cgutman) for all the work on Moonlighti-qt.\
 Thanks to [clarkemw and peetie2k](https://github.com/clarkemw/moonlight-embedded-launcher) for inspiration.\
-Thanks to [Janne Hakonen](https://github.com/jhakonen) for the Generic x86_64 work, great job! 
+Thanks to [Janne Hakonen](https://github.com/jhakonen) for the Generic x86_64 work, great job!

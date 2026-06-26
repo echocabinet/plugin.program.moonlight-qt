@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.program.moonlight-qt" name="Moonlight" version="0.5.2" provider-name="veldenb">
+<addon id="plugin.program.moonlight-qt" name="Moonlight" version="0.6.0" provider-name="echocabinet">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="service.system.docker" optional="true" version="9.80.11.133"/>
@@ -19,8 +19,8 @@
         <language>en nl de fr</language>
         <platform>linux</platform>
         <license>GPL-3.0-or-later</license>
-        <website>https://github.com/veldenb/plugin.program.moonlight-qt</website>
-        <source>https://github.com/veldenb/plugin.program.moonlight-qt</source>
+        <website>https://github.com/echocabinet/plugin.program.moonlight-qt</website>
+        <source>https://github.com/echocabinet/plugin.program.moonlight-qt</source>
         <disclaimer lang="en_GB">Feel free to use this at your own risk.</disclaimer>
         <disclaimer lang="nl_NL">Voel je vrij om dit te gebruiken maar wel op eigen risico.</disclaimer>
         <disclaimer lang="de_DE">Sie können dies auf eigenes Risiko verwenden.</disclaimer>

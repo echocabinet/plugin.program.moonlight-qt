@@ -34,6 +34,9 @@ USR_DEPENDENCIES="
   libSDL2.so*
   libSDL2-*.so*
   libSDL2_ttf-*.so*
+  libsamplerate.so*
+  libfreetype.so*
+  libharfbuzz.so*
   libSM.so*
   libSvtAv1Enc.so*
   libX11-xcb.so*

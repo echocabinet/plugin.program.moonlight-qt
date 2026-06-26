@@ -33,6 +33,7 @@ USR_DEPENDENCIES="
   libQt6*
   libSDL2.so*
   libSDL2-*.so*
+  libSDL2_ttf-*.so*
   libSM.so*
   libSvtAv1Enc.so*
   libX11-xcb.so*
